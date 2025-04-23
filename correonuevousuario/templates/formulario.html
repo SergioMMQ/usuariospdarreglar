@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Bienvenida</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        #estado {
+            font-family: Arial, sans-serif;
+            font-size: 1.1em;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Formulario de Bienvenida</h2>
+    <form id="formulario">
+        <label for="nombre_completo">Nombre completo:</label><br>
+        <input type="text" id="nombre_completo" name="nombre_completo" required><br><br>
+
+        <label for="titulo">Título:</label><br>
+        <select id="titulo" name="titulo" required>
+            <option value="">(Sin título)</option>
+            <option value="Dr.">Dr.</option>
+            <option value="Dra.">Dra.</option>
+            <option value="Ing.">Ing.</option>
+            <option value="Lic.">Lic.</option>
+        </select><br><br>
+
+        <label for="sexo">Sexo:</label><br>
+        <select id="sexo" name="sexo" required>
+            <option value="hombre">Hombre</option>
+            <option value="mujer">Mujer</option>
+        </select><br><br>
+
+        <label for="correo">Correo destinatario:</label><br>
+        <input type="email" id="correo" name="correo" required><br><br>
+
+        <label for="usuario">Nombre de usuario (Microsoft 365):</label><br>
+        <input type="text" id="usuario" name="usuario" required><br><br>
+
+        <label for="contrasena">Contraseña inicial:</label><br>
+        <input type="text" id="contrasena" name="contrasena" required><br><br>
+
+        <button type="submit">Enviar correo</button>
+    </form>
+
+    <p id="estado"></p>
+
+    <script>
+        const form = document.getElementById("formulario");
+        const estado = document.getElementById("estado");
+    
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+            estado.innerText = "🔄 Enviando primer correo de bienvenida...";
+    
+            const formData = new FormData(form);
+    
+            // Animaciones paso a paso
+            setTimeout(() => {
+                estado.innerText = "📩 Preparando segundo correo con firma...";
+            }, 2000);
+    
+            setTimeout(() => {
+                estado.innerText = "📎 Adjuntando firma personalizada...";
+            }, 4000);
+    
+            setTimeout(async () => {
+                estado.innerText = "⏳ Enviando segundo correo...";
+    
+                try {
+                    const respuesta = await fetch("http://localhost:5000/enviar", {
+                        method: "POST",
+                        body: formData
+                    });
+    
+                    if (!respuesta.ok) {
+                        throw new Error("Error al enviar los correos");
+                    }
+    
+                    // 👇 Leer la respuesta como HTML y mostrarla
+                    const html = await respuesta.text();
+                    document.open();
+                    document.write(html);
+                    document.close();
+    
+                } catch (error) {
+                    estado.innerText = "❌ Error al enviar los correos.";
+                    console.error(error);
+                }
+            }, 6000);
+        });
+    </script>    
+</body>
+</html>
